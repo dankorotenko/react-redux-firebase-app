@@ -1,6 +1,7 @@
 import { useState } from 'react';
-const SignIn = () => {
-
+import { connect } from 'react-redux';
+import {signIn} from '../../store/actions/authActions';
+const SignIn = (props) => {
 
     const [state, setState] = useState({
         email: '',
@@ -18,8 +19,9 @@ const SignIn = () => {
     const handleSubmit = e => {
         e.preventDefault();
         console.log(state);
+        props.signIn(state)
     }
-
+    const { authError} = props;
     return ( 
         <div className="container">
             <form onSubmit={handleSubmit} className="white">
@@ -34,10 +36,25 @@ const SignIn = () => {
                 </div>
                 <div className="input-field">
                     <button className="btn pink lighten-1 z-depth-0">Login</button>
+                    <div className="red-text center">
+                        {authError ? <p>{authError}</p> : null}
+                    </div>
                 </div>
             </form>
         </div>
      );
 }
+
+const mapStateToProps = (state) => {
+    return {
+        authError: state.auth.authError
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    signIn: (creds) => dispatch(signIn(creds))
+  }
+}
  
-export default SignIn;
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
