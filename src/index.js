@@ -5,18 +5,19 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { createStore, applyMiddleware, compose } from 'redux';
 import rootReducer from './store/reducers/rootReducer';
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import thunk from 'redux-thunk';
 import {  createFirestoreInstance, getFirestore, reduxFirestore } from 'redux-firestore'
 import fbConfig from './config/fbConfig';
-import { ReactReduxFirebaseProvider, getFirebase } from 'react-redux-firebase';
+import { ReactReduxFirebaseProvider, getFirebase, isLoaded } from 'react-redux-firebase';
 import firebase from 'firebase/app';
 
 const store = createStore(
   rootReducer,
   compose(
       applyMiddleware(thunk.withExtraArgument({ getFirestore, getFirebase })),
-      reduxFirestore(firebase, fbConfig)
+      reduxFirestore(firebase, fbConfig, {attachAuthIsReady: true}),
+
   )
 );
 
@@ -27,27 +28,21 @@ const rrfProps = {
   createFirestoreInstance
 };
 
-
-// const middlewares = [
-//   thunk.withExtraArgument({getFirestore })
-// ]
-// const store = createStore(
-//   rootReducer,
-//   compose(
-//     applyMiddleware(...middlewares),
-//     reduxFirestore(fbConfig)
-//   )
-// )
-
-
+function AuthIsLoaded({ children }) {
+  const auth = useSelector(state => state.firebase.auth)
+  if (!isLoaded(auth)) return null;
+  return children
+}
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-    <ReactReduxFirebaseProvider {...rrfProps}>
-        <App />
+      <ReactReduxFirebaseProvider {...rrfProps}>
+        <AuthIsLoaded>
+          <App />
+        </AuthIsLoaded>
       </ReactReduxFirebaseProvider>
-      </Provider>
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
