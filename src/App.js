@@ -15,9 +15,7 @@ function App() {
           <Route exact path="/">
             <Dashboard />
           </Route>
-          <Route path="/project/:id">
-            <ProjectDetails />
-          </Route>
+          <Route path='/project/:id' component={ProjectDetails} />
           <Route path="/signin">
             <SignIn/>
           </Route>
