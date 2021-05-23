@@ -3,18 +3,35 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import rootReducer from './store/reducers/rootReducer';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
+import {  getFirestore, reduxFirestore } from 'redux-firestore'
+import fbConfig from './config/fbConfig';
 
 
 
-const store = createStore(rootReducer);
+
+const middlewares = [
+  thunk.withExtraArgument({getFirestore })
+]
+const store = createStore(
+  rootReducer,
+  compose(
+    applyMiddleware(...middlewares),
+    reduxFirestore(fbConfig)
+  )
+)
+
+
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      
+        <App />
+     
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')
