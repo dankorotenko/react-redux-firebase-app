@@ -22,6 +22,7 @@ const CreateProject = (props) => {
         e.preventDefault();
         // console.log(state);
         props.createProject(state);
+        props.history.push('/');
     }
     const { auth } = props;
     if (!auth.uid)  return <Redirect to="/signin" />
