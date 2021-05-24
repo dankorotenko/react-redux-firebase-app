@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
+
+import { signUp } from '../../store/actions/authActions';
 const SignUp = (props) => {
 
 
@@ -22,6 +24,7 @@ const SignUp = (props) => {
     const handleSubmit = e => {
         e.preventDefault();
         console.log(state);
+        props.signUp(state)
     }
 
     const { auth } = props;
@@ -60,5 +63,11 @@ const mapStateToProps = state => {
         auth: state.firebase.auth
     }
 }
+
+const mapDispatchToProps = dispatch => {
+    return{
+        signUp: (newUser) => dispatch(signUp(newUser))
+    }
+} 
  
-export default connect(mapStateToProps)(SignUp);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
