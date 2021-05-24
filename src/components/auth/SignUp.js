@@ -27,7 +27,7 @@ const SignUp = (props) => {
         props.signUp(state)
     }
 
-    const { auth } = props;
+    const { auth, authError } = props;
     if(auth.uid) return <Redirect to="/"/>
     return ( 
         <div className="container">
@@ -52,6 +52,9 @@ const SignUp = (props) => {
                 
                 <div className="input-field">
                     <button className="btn pink lighten-1 z-depth-0">Sign up</button>
+                    <div className="red-text center">
+                        {authError ? <p>{authError}</p> : null}
+                    </div>
                 </div>
             </form>
         </div>
@@ -60,7 +63,8 @@ const SignUp = (props) => {
 
 const mapStateToProps = state => {
     return {
-        auth: state.firebase.auth
+        auth: state.firebase.auth,
+        authError: state.auth.authError
     }
 }
 
